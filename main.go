@@ -3,7 +3,6 @@ package main
 import (
 	"net/http"
 	"os"
-	"strconv"
 	"time"
 
 	"github.com/gomodule/redigo/redis"
@@ -21,9 +20,9 @@ func test(prefix string) {
 		return
 	}
 
-	i := 0
-	for {
-		conn.Do("SET", "CONFIG:"+prefix+":"+strconv.Itoa(i), "jfdsjfkljfldjflfdafdafdafdsafdsafdsaf"+
+	for i := 0; i < 2000; i++ {
+		key := fmt.Sprintf("CONFIG:%s:%08d", prefix, i)
+		conn.Do("SET", key, "jfdsjfkljfldjflfdafdafdafdsafdsafdsaf"+
 			"kdsajfoudafodsafdsfkldsjafkdsnmvnafkljdsfljdsalkfjdlskajfldjfakldjsalfkjdsalkfjdsklafjldaffdkdfdsafdsafsdafafadsfasj"+
 			"fldsajflkdsjaflkdjsalfkjdsalfjdlsajfldskjafkldsjalfkjdakfjdklsakfjdlksajflkdsajfdksafdsafdsafdsafdafdsafajfksadl"+
 			"jflkdsjaflkdsajflkjdsakfjdslkafjdslkajfkdsajflafjdlskajflkdsajfklsadjfkldsjfsajfjfdklsafdsafdsafdsafdsafdsafdsafsafjsdklafjdska"+
@@ -121,8 +120,7 @@ func test(prefix string) {
 						"jflkdsjaflkdsajflkjdsakfjdslkafjdslkajfkdsajflafjdlskajflkdsajfklsadjfkldsjfsajfjfdklsafdsafdsafdsafdsafdsafdsafsafjsdklafjdska"+ */
 			"fjdjfklsajfldafsafjdsalfjdskafjdslffdafdsafdafdsafdasfdsafdsafdaf", "EX", 2)
 		//fmt.Println("set " + "CONFIG:" + strconv.Itoa(i))
-		time.Sleep(5 * time.Millisecond)
-		i++
+		time.Sleep(25 * time.Millisecond)
 	}
 }
 
@@ -148,38 +146,38 @@ func main() {
 	go test("00")
 
 	go test("01")
-	/*	go test("02")
+	go test("02")
 
-		go test("03")
-		go test("04")
-		go test("05")
-		go test("06")
-		go test("07")
-		go test("08")
-		go test("09")
-		go test("10")
+	go test("03")
+	go test("04")
+	go test("05")
+	go test("06")
+	go test("07")
+	go test("08")
+	go test("09")
+	go test("10")
 
-			go test("11")
-			go test("12")
-			go test("13")
-			go test("14")
-			go test("15")
-			go test("16")
-			go test("17")
-			go test("18")
-			go test("19")
-			go test("20")
-			go test("21")
-			go test("22")
-			go test("23")
-			go test("24")
-			go test("25")
-			go test("26")
-			go test("27")
-			go test("28")
-			go test("29")
-			go test("30")
-			go test("31")*/
+	go test("11")
+	go test("12")
+	go test("13")
+	go test("14")
+	go test("15")
+	go test("16")
+	go test("17")
+	go test("18")
+	go test("19")
+	/*	go test("20")
+		go test("21")
+		go test("22")
+		go test("23")
+		go test("24")
+		go test("25")
+		go test("26")
+		go test("27")
+		go test("28")
+		go test("29")
+		go test("30")
+		go test("31")*/
 
 	psc := redis.PubSubConn{Conn: conn}
 	psc.PSubscribe("__key*__:CONFIG:*")
